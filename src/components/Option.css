@@ -1,0 +1,22 @@
+.option-header {
+	text-align: center;
+	text-decoration: underline;
+	margin: 10px;
+	font-weight: bold;
+}
+
+.option-list-container {
+	padding: 0;
+	list-style: none;
+}
+
+.option-list {
+	position: relative;
+	padding: 5px;
+}
+.option-star {
+	position: absolute;
+	left: 25px;
+	bottom: 15px;
+	color: rgba(216, 208, 208, 0.952);
+}

@@ -1,0 +1,16 @@
+.order-header {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	background-color: #fef4de;
+	position: relative;
+}
+.order-header-text {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-self: flex-end;
+	right: 10px;
+	top: 0;
+	bottom: 0;
+}

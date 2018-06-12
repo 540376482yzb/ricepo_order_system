@@ -1,0 +1,27 @@
+.item-container {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 50px;
+	cursor: pointer;
+}
+.item-container:hover {
+	background-color: #fef4de;
+}
+
+.item-name {
+	text-transform: capitalize;
+}
+.item-container section {
+	width: 50%;
+}
+
+.item-price-container {
+	display: flex;
+	justify-content: flex-end;
+	font-weight: bold;
+	color: rgba(5, 5, 5, 0.756);
+}
+
+.item-price {
+	margin-right: 10px;
+}
