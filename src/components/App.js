@@ -43,6 +43,7 @@ class App extends Component {
 		const targetOption = this.findItem(_options, data)
 		const {max, chosen} = targetOption
 		const targetItemInChosen = _.find(chosen, {name: data.updateItem.name})
+		//conditionally remove item quantity
 		if (this.isChosenFull(chosen, max)) {
 			const prevItemName = history[targetOption.name][0]
 			const prevItem = _.find(chosen, {name: prevItemName})
@@ -54,6 +55,7 @@ class App extends Component {
 				? theOtherItem.quantity >= 1 && (theOtherItem.quantity -= 1)
 				: prevItem.quantity >= 1 && (prevItem.quantity -= 1)
 		}
+		//add target item quantity
 		targetItemInChosen
 			? targetItemInChosen.quantity < max && (targetItemInChosen.quantity += 1)
 			: chosen.push(data.updateItem)
@@ -63,7 +65,10 @@ class App extends Component {
 
 	saveItem(options, targetOption, data) {
 		this.setState(prevState => {
-			const prevItems = prevState.history[targetOption.name] || []
+			const prevItems =
+				prevState.history[targetOption.name] !== undefined
+					? _.cloneDeep(prevState.history[targetOption.name])
+					: []
 			_.size(prevItems) >= targetOption.max && prevItems.shift()
 			prevItems.push(data.updateItem.name)
 			return {
@@ -76,7 +81,6 @@ class App extends Component {
 	isChosenFull = (chosenOption, max) => {
 		if (max === 0) return false
 		const total = _.sumBy(chosenOption, item => Number(item.quantity))
-		console.log('total', total)
 		if (total >= max) {
 			return true
 		}
