@@ -24,24 +24,33 @@ export default class Option extends React.Component {
 		})
 	}
 
+	handleDeleteItem = (optionName, itemName) => {
+		this.props.handleDeleteItem(optionName, itemName)
+	}
+
 	renderItems = items => {
 		const {focusItem} = this.state
-		const {chosen} = this.props.option
+		const {chosen, name: optionName} = this.props.option
 		return _.map(items, item => {
-			const {name, price, available} = item
-			const itemInChosen = _.find(chosen, {name})
+			const {name: itemName, price, available} = item
+			const itemInChosen = _.find(chosen, {name: itemName})
 			return (
 				available && (
 					<li
-						key={name}
+						key={itemName}
 						className="option-list"
-						onMouseEnter={() => this.handleSelect(name)}
+						onMouseEnter={() => this.handleSelect(itemName)}
 						onMouseLeave={() => this.handleSelect(null)}
 						onClick={() => this.handleAddItem(item)}
 					>
 						{/* Display star icon on hover */}
-						{focusItem === name && <Star className="option-star" />}
-						<Item name={name} price={price} quantity={!!itemInChosen && itemInChosen.quantity} />
+						{focusItem === itemName && <Star className="option-star" />}
+						<Item
+							itemName={itemName}
+							price={price}
+							quantity={!!itemInChosen && itemInChosen.quantity}
+							onItemDelete={() => this.handleDeleteItem(optionName, itemName)}
+						/>
 					</li>
 				)
 			)

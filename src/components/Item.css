@@ -1,11 +1,13 @@
 .item-container {
 	display: flex;
 	justify-content: space-between;
-	padding: 10px 50px;
+	padding: 0 40px;
 	cursor: pointer;
+	height: 40px;
+	align-items: center;
 }
 .item-container:hover {
-	background-color: #fef4de;
+	background-color: #fcf9f3;
 }
 
 .item-name {
@@ -20,8 +22,23 @@
 	justify-content: flex-end;
 	font-weight: bold;
 	color: rgba(5, 5, 5, 0.756);
+	align-items: center;
 }
 
 .item-price {
 	margin-right: 10px;
+}
+.item-quantity {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: solid 0.5px rgba(5, 5, 5, 0.456);
+	width: 40px;
+	padding: 2px 0;
+	transform: translateX(10px);
+	border-radius: 10px;
+}
+.item-quantity:active {
+	background-color: rgb(216, 214, 214);
+	transition: all 0.1s ease;
 }

@@ -4,7 +4,9 @@ import {fetchTestOrder} from '../actions/index'
 import Header from './Header'
 import Option from './Option'
 import _ from 'lodash'
-
+import Overlay from './Overlay'
+import Warning from './Warning'
+import Checkout from './Checkout'
 class App extends Component {
 	constructor(props) {
 		super(props)
@@ -12,7 +14,9 @@ class App extends Component {
 			name: null,
 			price: null,
 			options: null,
-			history: {}
+			history: {},
+			warningMessage: null,
+			openCheckout: false
 		}
 	}
 	componentDidMount() {
@@ -25,10 +29,6 @@ class App extends Component {
 		this.addItem(data)
 	}
 
-	findItem = (options, data) => {
-		return _.find(options, {name: data.optionName})
-	}
-
 	/*
       Logic Analysis:
       if chosen is full
@@ -36,11 +36,11 @@ class App extends Component {
             then find the earliest non-target item and reduce it's quantity by 1
         for all other cases reduce the earliest item's quantity (including target item) by 1
       add one to the target item
-        */
+  */
 	addItem = data => {
 		const {options, history} = this.state
 		const _options = _.cloneDeep(options)
-		const targetOption = this.findItem(_options, data)
+		const targetOption = this.findOption(_options, data.optionName)
 		const {max, chosen} = targetOption
 		const targetItemInChosen = _.find(chosen, {name: data.updateItem.name})
 		//conditionally remove item quantity
@@ -60,10 +60,14 @@ class App extends Component {
 			? targetItemInChosen.quantity < max && (targetItemInChosen.quantity += 1)
 			: chosen.push(data.updateItem)
 
-		this.saveItem(_options, targetOption, data)
+		this.saveItemAfterAdd(_options, targetOption, data)
 	}
 
-	saveItem(options, targetOption, data) {
+	findOption = (options, optionName) => {
+		return _.find(options, {name: optionName})
+	}
+
+	saveItemAfterAdd(options, targetOption, data) {
 		this.setState(prevState => {
 			const prevItems =
 				prevState.history[targetOption.name] !== undefined
@@ -87,18 +91,61 @@ class App extends Component {
 		return false
 	}
 
+	handleDeleteItem = (optionName, itemName) => {
+		const _options = _.cloneDeep(this.state.options)
+		const targetOption = this.findOption(_options, optionName)
+		let targetItem = _.find(targetOption.chosen, {name: itemName})
+		targetItem.quantity > 0 && (targetItem.quantity -= 1)
+		this.setState({
+			options: _options
+		})
+	}
+
+	handleCheckout = () => {
+		const {options} = this.state
+		const minRequired = _.filter(options, option => {
+			const {chosen, min} = option
+			const totalQuantity = _.sumBy(chosen, item => Number(item.quantity)) || 0
+			return min !== 0 && totalQuantity < min ? true : false
+		})
+		const warningMessages = _.map(
+			minRequired,
+			entry => `pick at least ${entry.min} item from ${entry.name}`
+		)
+		if (_.size(warningMessages) > 0) this.setState({warningMessages})
+		else this.setState({openCheckout: true})
+	}
+
 	render() {
-		const {name, price, options} = this.state
+		const {name, price, options, warningMessages, openCheckout} = this.state
 		if (!name || !price || !options) return <div>Loading ...</div>
 
 		return (
 			<div className="App">
-				<Header title={name} price={price} />
+				<Header title={name} price={price} onClick={this.handleCheckout} />
 				<main>
 					{options.map((option, index) => (
-						<Option key={index} option={option} handleAddItem={this.handleAddItem} />
+						<Option
+							key={index}
+							option={option}
+							handleAddItem={this.handleAddItem}
+							handleDeleteItem={this.handleDeleteItem}
+						/>
 					))}
 				</main>
+				{warningMessages && (
+					<Overlay>
+						<Warning
+							messages={warningMessages}
+							onConfirm={() => this.setState({warningMessages: null})}
+						/>
+					</Overlay>
+				)}
+				{openCheckout && (
+					<Overlay>
+						<Checkout price={price} name={name} options={options} />
+					</Overlay>
+				)}
 			</div>
 		)
 	}

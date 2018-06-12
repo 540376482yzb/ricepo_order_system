@@ -1,10 +1,7 @@
 // normalize async error sent back from server
 export const normalizeResponseErrors = res => {
 	if (!res.ok) {
-		if (
-			res.headers.has('content-type') &&
-			res.headers.get('content-type').startWith('application/json')
-		) {
+		if (res.headers.has('content-type')) {
 			//return meaningful errors
 			return res.json().then(err => Promise.reject(err))
 		}
