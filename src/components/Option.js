@@ -17,7 +17,7 @@ export default class Option extends React.Component {
 	}
 
 	handleAddItem = item => {
-		const {name, price, quantity, available} = item
+		const {name, price, available} = item
 		this.props.handleAddItem({
 			optionName: this.props.option.name,
 			updateItem: {name, price, quantity: 1, available}
@@ -26,8 +26,10 @@ export default class Option extends React.Component {
 
 	renderItems = items => {
 		const {focusItem} = this.state
+		const {chosen} = this.props.option
 		return _.map(items, item => {
-			const {name, price, quantity, available} = item
+			const {name, price, available} = item
+			const itemInChosen = _.find(chosen, {name})
 			return (
 				available && (
 					<li
@@ -39,7 +41,7 @@ export default class Option extends React.Component {
 					>
 						{/* Display star icon on hover */}
 						{focusItem === name && <Star className="option-star" />}
-						<Item name={name} price={price} quantity={quantity} />
+						<Item name={name} price={price} quantity={!!itemInChosen && itemInChosen.quantity} />
 					</li>
 				)
 			)
