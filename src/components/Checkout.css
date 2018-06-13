@@ -6,7 +6,7 @@
 	right: 0;
 	bottom: 0;
 	width: 80%;
-	height: 200px;
+	height: 80%;
 	margin: auto auto;
 	z-index: 3;
 	background-color: white;
@@ -14,6 +14,9 @@
 	border-radius: 5px;
 }
 
+hr {
+	border: 0.5px solid rgba(0, 0, 0, 0.114);
+}
 .checkout-message {
 	display: block;
 	width: 100%;
@@ -21,10 +24,18 @@
 	padding: 10px;
 	text-align: center;
 }
+.checkout-message div {
+	text-align: right;
+	padding-right: 10px;
+}
+
+.checkout-base {
+	margin-bottom: 10px;
+}
 
 .checkout-button {
 	width: 100%;
-	height: 20%;
+	height: 50px;
 	background-color: white;
 	color: rgba(0, 0, 0, 0.829);
 	font-weight: bold;
@@ -36,4 +47,17 @@
 
 .checkout-button:hover {
 	background-color: rgba(241, 239, 239, 0.877);
+}
+
+.checkout-option-header {
+	text-align: center;
+}
+.checkout-option-list-container {
+	padding-left: 10px;
+	list-style: none;
+}
+
+.checkout-total {
+	text-align: right;
+	padding-right: 10px;
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './App.css'
-import {fetchTestOrder} from '../actions/index'
+import {fetchTestOrder, findOption, isChosenFull} from '../actions/index'
 import Header from './Header'
 import Option from './Option'
 import _ from 'lodash'
@@ -12,7 +12,7 @@ class App extends Component {
 		super(props)
 		this.state = {
 			name: null,
-			price: null,
+			basePrice: null,
 			options: null,
 			history: {},
 			warningMessage: null,
@@ -21,7 +21,7 @@ class App extends Component {
 	}
 	componentDidMount() {
 		fetchTestOrder()
-			.then(({name, price, options}) => this.setState({name, price, options}))
+			.then(({name, price: basePrice, options}) => this.setState({name, basePrice, options}))
 			.catch(err => console.log(err))
 	}
 
@@ -40,11 +40,11 @@ class App extends Component {
 	addItem = data => {
 		const {options, history} = this.state
 		const _options = _.cloneDeep(options)
-		const targetOption = this.findOption(_options, data.optionName)
+		const targetOption = findOption(_options, data.optionName)
 		const {max, chosen} = targetOption
 		const targetItemInChosen = _.find(chosen, {name: data.updateItem.name})
 		//conditionally remove item quantity
-		if (this.isChosenFull(chosen, max)) {
+		if (isChosenFull(chosen, max)) {
 			const prevItemName = history[targetOption.name][0]
 			const prevItem = _.find(chosen, {name: prevItemName})
 			const theOtherItem =
@@ -63,10 +63,6 @@ class App extends Component {
 		this.saveItemAfterAdd(_options, targetOption, data)
 	}
 
-	findOption = (options, optionName) => {
-		return _.find(options, {name: optionName})
-	}
-
 	saveItemAfterAdd(options, targetOption, data) {
 		this.setState(prevState => {
 			const prevItems =
@@ -82,18 +78,9 @@ class App extends Component {
 		})
 	}
 
-	isChosenFull = (chosenOption, max) => {
-		if (max === 0) return false
-		const total = _.sumBy(chosenOption, item => Number(item.quantity))
-		if (total >= max) {
-			return true
-		}
-		return false
-	}
-
 	handleDeleteItem = (optionName, itemName) => {
 		const _options = _.cloneDeep(this.state.options)
-		const targetOption = this.findOption(_options, optionName)
+		const targetOption = findOption(_options, optionName)
 		let targetItem = _.find(targetOption.chosen, {name: itemName})
 		targetItem.quantity > 0 && (targetItem.quantity -= 1)
 		this.setState({
@@ -117,12 +104,16 @@ class App extends Component {
 	}
 
 	render() {
-		const {name, price, options, warningMessages, openCheckout} = this.state
-		if (!name || !price || !options) return <div>Loading ...</div>
-
+		const {name, basePrice, options, warningMessages, openCheckout} = this.state
+		if (!name || !basePrice || !options) return <div>Loading ...</div>
 		return (
 			<div className="App">
-				<Header title={name} price={price} onClick={this.handleCheckout} />
+				<Header
+					title={name}
+					basePrice={basePrice}
+					options={options}
+					onClick={this.handleCheckout}
+				/>
 				<main>
 					{options.map((option, index) => (
 						<Option
@@ -143,7 +134,12 @@ class App extends Component {
 				)}
 				{openCheckout && (
 					<Overlay>
-						<Checkout price={price} name={name} options={options} />
+						<Checkout
+							basePrice={basePrice}
+							name={name}
+							options={options}
+							checkout={() => this.setState({openCheckout: false})}
+						/>
 					</Overlay>
 				)}
 			</div>

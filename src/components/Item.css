@@ -37,8 +37,6 @@
 	padding: 2px 0;
 	transform: translateX(10px);
 	border-radius: 10px;
-}
-.item-quantity:active {
-	background-color: rgb(216, 214, 214);
-	transition: all 0.1s ease;
+	background-color: white;
+	box-shadow: 0 1px 5px 0 rgba(5, 5, 5, 0.256);
 }
