@@ -4,7 +4,6 @@ import _ from 'lodash'
 import {calculateSurCharge} from '../actions/index'
 export default function Header(props) {
 	const optionsSurCharger = calculateSurCharge(props.options)
-	console.log(optionsSurCharger)
 	return (
 		<header className="order-header" onClick={() => props.onClick()}>
 			<h3>{props.title}</h3>

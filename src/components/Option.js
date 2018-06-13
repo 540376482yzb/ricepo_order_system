@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import Item from './Item'
 import './Option.css'
-import Star from 'react-icons/lib/fa/star'
+import Arrow from 'react-icons/lib/fa/angle-right'
 export default class Option extends React.Component {
 	constructor(props) {
 		super(props)
@@ -44,7 +44,7 @@ export default class Option extends React.Component {
 						onClick={() => this.handleAddItem(item)}
 					>
 						{/* Display star icon on hover */}
-						{focusItem === itemName && <Star className="option-star" />}
+						{focusItem === itemName && <Arrow className="option-star" />}
 						<Item
 							itemName={itemName}
 							price={price}

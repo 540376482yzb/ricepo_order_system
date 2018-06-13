@@ -14,6 +14,7 @@ export default function Checkout(props) {
 		})
 	}
 	const renderItems = items => {
+		//only render items whose quantity is greater than 0
 		return items.map((item, index) => {
 			if (item.quantity > 0) {
 				return (
@@ -41,7 +42,7 @@ export default function Checkout(props) {
 				<hr />
 				<section className="checkout-total">Total ----------------- $ {total}</section>
 			</section>
-
+			{/* mock checkout out, do not have functionality as now */}
 			<button className="checkout-button" onClick={() => checkout()}>
 				Proceed to checkout
 			</button>
