@@ -47,9 +47,10 @@ class App extends Component {
 		if (isChosenFull(chosen, max)) {
 			const prevItemName = history[targetOption.name][0]
 			const prevItem = _.find(chosen, {name: prevItemName})
+			//Find earliest Non-target item whose quantity is not zero
 			const theOtherItem =
 				targetItemInChosen !== undefined
-					? _.find(chosen, item => item.name !== targetItemInChosen.name)
+					? _.find(chosen, item => item.name !== targetItemInChosen.name && item.quantity > 0)
 					: undefined
 			max > 1 && theOtherItem && prevItemName === targetItemInChosen.name
 				? theOtherItem.quantity >= 1 && (theOtherItem.quantity -= 1)
