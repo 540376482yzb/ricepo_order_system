@@ -23,6 +23,38 @@
 			]
 		},
 		{
+			"name": "Test",
+			"min": 0,
+			"max": 3,
+			"chosen": [],
+			"items": [
+				{
+					"name": "A",
+					"price": 0,
+					"available": true,
+					"quantity": 0
+				},
+				{
+					"name": "B",
+					"price": 0,
+					"available": true,
+					"quantity": 0
+				},
+				{
+					"name": "C",
+					"price": 0,
+					"available": true,
+					"quantity": 0
+				},
+				{
+					"name": "D",
+					"price": 0,
+					"available": true,
+					"quantity": 0
+				}
+			]
+		},
+		{
 			"name": "Tea",
 			"min": 1,
 			"max": 1,

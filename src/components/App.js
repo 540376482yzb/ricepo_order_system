@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './App.css'
-import {fetchTestOrder, findOption, isChosenFull} from '../actions/index'
+import {fetchTestOrder, findOption, isChosenFull, findOtherItem} from '../actions/index'
 import Header from './Header'
 import Option from './Option'
 import _ from 'lodash'
@@ -25,14 +25,10 @@ class App extends Component {
 			.catch(err => console.log(err))
 	}
 
-	handleAddItem = data => {
-		this.addItem(data)
-	}
-
 	/*
       Logic Analysis:
       if chosen is full
-        if chosen has size greater than 1 && user' order pattern follows A -> B -> A
+        if chosen has size greater than 1 && user' order pattern such that it follows A -> B -> A
             then find the earliest non-target item and reduce it's quantity by 1
         for all other cases reduce the earliest item's quantity (including target item) by 1
       add one to the target item
@@ -43,6 +39,7 @@ class App extends Component {
 		const targetOption = findOption(_options, data.optionName)
 		const {max, chosen} = targetOption
 		const targetItemInChosen = _.find(chosen, {name: data.updateItem.name})
+
 		//conditionally remove item quantity
 		if (isChosenFull(chosen, max)) {
 			const prevItemName = history[targetOption.name][0]
@@ -50,17 +47,18 @@ class App extends Component {
 			//Find earliest Non-target item whose quantity is not zero
 			const theOtherItem =
 				targetItemInChosen !== undefined
-					? _.find(chosen, item => item.name !== targetItemInChosen.name && item.quantity > 0)
+					? findOtherItem(targetItemInChosen, data.optionName, history, chosen)
 					: undefined
+			//conditionally decrease quantity
 			max > 1 && theOtherItem && prevItemName === targetItemInChosen.name
-				? theOtherItem.quantity >= 1 && (theOtherItem.quantity -= 1)
-				: prevItem.quantity >= 1 && (prevItem.quantity -= 1)
+				? theOtherItem.quantity > 0 && (theOtherItem.quantity -= 1)
+				: prevItem.quantity > 0 && (prevItem.quantity -= 1)
 		}
-		//add target item quantity
+
+		//add target item quantity or push into chosen array if it does not exist
 		targetItemInChosen
 			? targetItemInChosen.quantity < max && (targetItemInChosen.quantity += 1)
 			: chosen.push(data.updateItem)
-
 		this.saveItemAfterAdd(_options, targetOption, data)
 	}
 
@@ -120,7 +118,7 @@ class App extends Component {
 						<Option
 							key={index}
 							option={option}
-							handleAddItem={this.handleAddItem}
+							handleAddItem={this.addItem}
 							handleDeleteItem={this.handleDeleteItem}
 						/>
 					))}

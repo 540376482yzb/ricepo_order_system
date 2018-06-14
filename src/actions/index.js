@@ -31,3 +31,20 @@ export const isChosenFull = (chosenOption, max) => {
 	}
 	return false
 }
+
+export const basicFunction = (a, b) => {
+	return a + b
+}
+
+export const findOtherItem = (targetItem, optionName, history, chosen) => {
+	if (targetItem) {
+		for (let itemName of history[optionName]) {
+			if (targetItem.name !== itemName) {
+				const foundItem = _.find(chosen, {name: itemName})
+				if (foundItem.quantity > 0) return foundItem
+			}
+		}
+	}
+
+	return null
+}
