@@ -16,57 +16,59 @@ const asyncFn = () => {
 
 describe('App', async () => {
 	fetchMock.get(`*`, JSON.stringify(mock))
-	it('should render without crashes', () => {
-		shallow(<App />)
-	})
-	it('should populate state after fetch call is made', async () => {
-		const wrapper = mount(<App />)
-		await sleep(DELAY_MS - 1000)
-		const {name, basePrice, options} = wrapper.instance().state
-		expect(name).not.toBeNull()
-		expect(basePrice).not.toBeNull()
-		expect(options).not.toBeNull()
-	})
-	it('should add item to the chosen array after addItem is called', async () => {
-		const wrapper = mount(<App />)
-		await sleep(DELAY_MS - 1000)
-		wrapper.instance().addItem({
-			optionName: 'Add On',
-			updateItem: {
-				name: 'bubble',
-				price: 50,
-				available: true,
-				quantity: 0
-			}
+	describe('testing basic business logic', () => {
+		it('should render without crashes', () => {
+			shallow(<App />)
 		})
-		// wrapper.update()
-		const firstOptionChosen = wrapper.instance().state.options[0].chosen
-		expect(_.size(firstOptionChosen)).toBe(1)
-	})
-	it('should add an item multiple times before it reaches max should increase quantity', async () => {
-		const wrapper = mount(<App />)
-		await sleep(DELAY_MS - 1000)
-		wrapper.instance().addItem({
-			optionName: 'Add On',
-			updateItem: {
-				name: 'bubble',
-				price: 50,
-				available: true,
-				quantity: 1
-			}
+		it('should populate state after fetch call is made', async () => {
+			const wrapper = mount(<App />)
+			await sleep(DELAY_MS - 1000)
+			const {name, basePrice, options} = wrapper.instance().state
+			expect(name).not.toBeNull()
+			expect(basePrice).not.toBeNull()
+			expect(options).not.toBeNull()
 		})
-		wrapper.instance().addItem({
-			optionName: 'Add On',
-			updateItem: {
-				name: 'bubble',
-				price: 50,
-				available: true,
-				quantity: 1
-			}
+		it('should add item to the chosen array after addItem is called', async () => {
+			const wrapper = mount(<App />)
+			await sleep(DELAY_MS - 1000)
+			wrapper.instance().addItem({
+				optionName: 'Add On',
+				updateItem: {
+					name: 'bubble',
+					price: 50,
+					available: true,
+					quantity: 0
+				}
+			})
+			// wrapper.update()
+			const firstOptionChosen = wrapper.instance().state.options[0].chosen
+			expect(_.size(firstOptionChosen)).toBe(1)
 		})
-		const firstOptionChosen = wrapper.instance().state.options[0].chosen
-		const bubble = _.find(firstOptionChosen, {name: 'bubble'})
-		expect(bubble.quantity).toBe(2)
+		it('should remain max when add item after max allowed', async () => {
+			const wrapper = mount(<App />)
+			await sleep(DELAY_MS - 1000)
+			wrapper.instance().addItem({
+				optionName: 'Add On',
+				updateItem: {
+					name: 'bubble',
+					price: 50,
+					available: true,
+					quantity: 1
+				}
+			})
+			wrapper.instance().addItem({
+				optionName: 'Add On',
+				updateItem: {
+					name: 'bubble',
+					price: 50,
+					available: true,
+					quantity: 1
+				}
+			})
+			const firstOptionChosen = wrapper.instance().state.options[0].chosen
+			const bubble = _.find(firstOptionChosen, {name: 'bubble'})
+			expect(bubble.quantity).toBe(2)
+		})
 	})
 
 	describe('when the chosen array is full', () => {

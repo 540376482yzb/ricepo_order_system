@@ -7,6 +7,7 @@ import _ from 'lodash'
 import Overlay from './Overlay'
 import Warning from './Warning'
 import Checkout from './Checkout'
+import Loader from './loader'
 class App extends Component {
 	constructor(props) {
 		super(props)
@@ -19,12 +20,6 @@ class App extends Component {
 			openCheckout: false
 		}
 	}
-	componentDidMount() {
-		fetchTestOrder()
-			.then(({name, price: basePrice, options}) => this.setState({name, basePrice, options}))
-			.catch(err => console.log(err))
-	}
-
 	/*
       Logic Analysis:
       if chosen is full
@@ -104,7 +99,7 @@ class App extends Component {
 
 	render() {
 		const {name, basePrice, options, warningMessages, openCheckout} = this.state
-		if (!name || !basePrice || !options) return <div>Loading ...</div>
+		if (!name || !basePrice || !options) return <Loader />
 		return (
 			<div className="App">
 				<Header
@@ -143,6 +138,12 @@ class App extends Component {
 				)}
 			</div>
 		)
+	}
+
+	componentDidMount() {
+		fetchTestOrder()
+			.then(({name, price: basePrice, options}) => this.setState({name, basePrice, options}))
+			.catch(err => console.log(err))
 	}
 }
 
