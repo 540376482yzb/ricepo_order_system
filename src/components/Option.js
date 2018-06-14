@@ -43,7 +43,7 @@ export default class Option extends React.Component {
 						onMouseLeave={() => this.handleSelect(null)}
 						onClick={() => this.handleAddItem(item)}
 					>
-						{/* Display star icon on hover */}
+						{/* Display arrow icon on hover */}
 						{focusItem === itemName && <Arrow className="option-star" />}
 						<Item
 							itemName={itemName}

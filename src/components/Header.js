@@ -1,6 +1,5 @@
 import React from 'react'
 import './Header.css'
-import _ from 'lodash'
 import {calculateSurCharge} from '../actions/index'
 export default function Header(props) {
 	const optionsSurCharger = calculateSurCharge(props.options)

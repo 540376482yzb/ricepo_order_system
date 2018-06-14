@@ -1,4 +1,3 @@
-import mockData from '../mock.json'
 import {normalizeResponseErrors} from './utils'
 import _ from 'lodash'
 const proxyServer = 'https://zhou-cors-proxy.herokuapp.com'
@@ -30,10 +29,6 @@ export const isChosenFull = (chosenOption, max) => {
 		return true
 	}
 	return false
-}
-
-export const basicFunction = (a, b) => {
-	return a + b
 }
 
 export const findOtherItem = (targetItem, optionName, history, chosen) => {

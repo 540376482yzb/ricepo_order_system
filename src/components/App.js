@@ -20,6 +20,8 @@ class App extends Component {
 			openCheckout: false
 		}
 	}
+
+	//===================== add Item (data) ======================================
 	/*
       Logic Analysis:
       if chosen is full
@@ -28,6 +30,7 @@ class App extends Component {
         for all other cases reduce the earliest item's quantity (including target item) by 1
       add one to the target item
   */
+
 	addItem = data => {
 		const {options, history} = this.state
 		const _options = _.cloneDeep(options)
@@ -37,17 +40,14 @@ class App extends Component {
 
 		//conditionally remove item quantity
 		if (isChosenFull(chosen, max)) {
+			//Find earliest Non-target item whose quantity is not zero
+			const theOtherItem = findOtherItem(targetItemInChosen, data.optionName, history, chosen)
 			const prevItemName = history[targetOption.name][0]
 			const prevItem = _.find(chosen, {name: prevItemName})
-			//Find earliest Non-target item whose quantity is not zero
-			const theOtherItem =
-				targetItemInChosen !== undefined
-					? findOtherItem(targetItemInChosen, data.optionName, history, chosen)
-					: undefined
-			//conditionally decrease quantity
+			//remove the other if earliest item is the same as target item otherwise remove earliest item
 			max > 1 && theOtherItem && prevItemName === targetItemInChosen.name
-				? theOtherItem.quantity > 0 && (theOtherItem.quantity -= 1)
-				: prevItem.quantity > 0 && (prevItem.quantity -= 1)
+				? (theOtherItem.quantity -= 1)
+				: (prevItem.quantity -= 1)
 		}
 
 		//add target item quantity or push into chosen array if it does not exist
@@ -63,8 +63,10 @@ class App extends Component {
 				prevState.history[targetOption.name] !== undefined
 					? _.cloneDeep(prevState.history[targetOption.name])
 					: []
+			//shift history to the left by 1 if size is full
 			_.size(prevItems) >= targetOption.max && prevItems.shift()
 			prevItems.push(data.updateItem.name)
+			//save changes to the state
 			return {
 				options,
 				history: {...prevState.history, [targetOption.name]: prevItems}
